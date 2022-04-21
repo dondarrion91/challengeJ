@@ -2,13 +2,19 @@
   <b-container>
     <b-row>
       <b-col md="12">
-        <b-table striped hover :items="pokemonList">
+        <b-table striped hover :items="pokemonList" :fields="fields" @row-clicked="viewPokemonDetail">
           <template #cell(image)="data">
             <img :src="data.item.image" alt="" />
           </template>
 
           <template #cell(type)="data">
-            <p v-for="(type, index) in data.item.type" :key="index" class="badge bg-secondary">{{ type }}</p>
+            <p
+              v-for="(type, index) in data.item.type"
+              :key="index"
+              class="badge bg-secondary"
+            >
+              {{ type }}
+            </p>
           </template>
         </b-table>
       </b-col>
@@ -26,9 +32,7 @@ export default {
   data() {
     return {
       pokemonList: [],
-      colors: {
-        "poison": "#2312Fsa"
-      }
+      fields: ['image', 'name', 'type'],
     };
   },
   methods: {
@@ -47,6 +51,7 @@ export default {
         this.pokemonList = fullList
           .map((el) => el.data)
           .map((el) => ({
+            id: el.id,
             image: el.sprites.front_default,
             name: el.name,
             type: el.types.map((type) => type.type.name),
@@ -54,6 +59,14 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    viewPokemonDetail(row) {
+      this.$router.push({
+        name: "Pokemon",
+        params: {
+          id: row.id,
+        },
+      });
     },
   },
   created() {
